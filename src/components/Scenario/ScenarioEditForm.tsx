@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import CoverUpload from "@/components/ui/cover-upload";
+import GalleryUpload from "@/components/ui/gallery-upload";
 import { useTranslation } from "@/lib/i18n/react";
 import type { IModDto, ModFilterConfig } from "@dicecho/types";
 import TableUpload from "@/components/file-upload/table-upload";
@@ -293,10 +294,25 @@ export function ScenarioEditForm({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("profile_about")}</FormLabel>
+              <FormLabel>{t("description")}</FormLabel>
               <FormControl>
                 <Textarea rows={5} {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="imageUrls"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("scenario_gallery")}</FormLabel>
+              <GalleryUpload
+                value={field.value ?? []}
+                onChange={field.onChange}
+              />
               <FormMessage />
             </FormItem>
           )}

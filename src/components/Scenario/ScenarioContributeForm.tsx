@@ -26,6 +26,7 @@ import { useTranslation } from "@/lib/i18n/react";
 import type { IModDto, ModFilterConfig } from "@dicecho/types";
 import { Card } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
+import GalleryUpload from "@/components/ui/gallery-upload";
 import {
   Popover,
   PopoverContent,
@@ -227,9 +228,9 @@ export function ScenarioContributeForm({
               <MultipleSelector
                 options={(config?.languages ?? []).map((lang) => ({
                   value: lang._id,
-                  label: lang._id,
+                  label: t(`language_codes.${lang._id}`),
                 }))}
-                value={(field.value ?? []).map((v) => ({ value: v, label: v }))}
+                value={(field.value ?? []).map((v) => ({ value: v, label: t(`language_codes.${v}`) }))}
                 onChange={(opts) => field.onChange(opts.map((o) => o.value))}
                 placeholder={t("select_languages")}
                 creatable={false}
@@ -349,10 +350,25 @@ export function ScenarioContributeForm({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("profile_about")}</FormLabel>
+              <FormLabel>{t("description")}</FormLabel>
               <FormControl>
                 <Textarea rows={5} {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="imageUrls"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("scenario_gallery")}</FormLabel>
+              <GalleryUpload
+                value={field.value ?? []}
+                onChange={field.onChange}
+              />
               <FormMessage />
             </FormItem>
           )}

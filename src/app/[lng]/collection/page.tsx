@@ -19,9 +19,12 @@ export default async function CollectionPage(props: {
   const params = await props.params;
   const { lng } = params;
 
-  const { t } = await getTranslation(lng);
-  const api = await getDicechoServerApi();
-  const session = await getServerAuthSession();
+  // Parallel fetch: translation, API client, and session
+  const [{ t }, api, session] = await Promise.all([
+    getTranslation(lng),
+    getDicechoServerApi(),
+    getServerAuthSession(),
+  ]);
 
   // Fetch initial recommended collections
   const initialData = await api.collection.list({

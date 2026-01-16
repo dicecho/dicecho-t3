@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import dynamic from "next/dynamic";
 import { KEYS } from "platejs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,7 +22,16 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Rate } from "@/components/ui/rate";
-import { RichTextEditor } from "@/components/Editor";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Dynamic import for RichTextEditor to reduce initial bundle size
+const RichTextEditor = dynamic(
+  () => import("@/components/Editor/RichTextEditor").then((mod) => mod.RichTextEditor),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-32 w-full rounded-md" />,
+  }
+);
 import type { IRateDto } from "@dicecho/types";
 import {
   RateView,

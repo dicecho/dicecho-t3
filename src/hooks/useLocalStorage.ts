@@ -4,7 +4,12 @@ export const useLocalStorage = <S>(
   key: string,
   initialState?: S | (() => S)
 ): [S, React.Dispatch<React.SetStateAction<S>>] => {
-  const [state, setState] = useState<S>(initialState as S);
+  // Use lazy initialization to properly handle function initializers
+  const [state, setState] = useState<S>(() =>
+    typeof initialState === "function"
+      ? (initialState as () => S)()
+      : (initialState as S)
+  );
   const [mounted, setMounted] = useState(false);
   useDebugValue(state);
 

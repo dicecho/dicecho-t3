@@ -261,13 +261,10 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
     );
 
     useEffect(() => {
-      if (open) {
-        document.addEventListener('mousedown', handleClickOutside);
-        document.addEventListener('touchend', handleClickOutside);
-      } else {
-        document.removeEventListener('mousedown', handleClickOutside);
-        document.removeEventListener('touchend', handleClickOutside);
-      }
+      if (!open) return;
+
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchend', handleClickOutside);
 
       return () => {
         document.removeEventListener('mousedown', handleClickOutside);

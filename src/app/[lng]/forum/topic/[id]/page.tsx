@@ -12,9 +12,12 @@ export async function generateMetadata({
 }: {
   params: Promise<{ lng: string; id: string }>;
 }): Promise<Metadata> {
-  const { id, lng } = await params;
+  // Parallel: parse params and get API client
+  const [{ id, lng }, api] = await Promise.all([
+    params,
+    getDicechoServerApi(),
+  ]);
 
-  const api = await getDicechoServerApi();
   const topic = await api.topic.detail(id, { revalidate: 60 }).catch(() => null);
 
   if (!topic) {
@@ -62,9 +65,12 @@ export default async function TopicDetailPage({
 }: {
   params: Promise<{ lng: string; id: string }>;
 }) {
-  const { lng, id } = await params;
+  // Parallel: parse params and get API client
+  const [{ lng, id }, api] = await Promise.all([
+    params,
+    getDicechoServerApi(),
+  ]);
 
-  const api = await getDicechoServerApi();
   const topic = await api.topic.detail(id, { revalidate: 60 }).catch(() => null);
 
   if (!topic) {

@@ -41,12 +41,15 @@ export default async function ForumPage({
   params: Promise<{ lng: string }>;
   searchParams: Promise<{ sort?: string }>;
 }) {
-  const { lng } = await params;
-  const { sort: sortParam } = await searchParams;
+  const [{ lng }, { sort: sortParam }] = await Promise.all([params, searchParams]);
   const sortKey = (sortParam as TopicSortKey) || TopicSortKey.CREATED_AT;
-  const { t } = await getTranslation(lng);
 
-  const api = await getDicechoServerApi();
+  // Parallel fetch: translation and API client
+  const [{ t }, api] = await Promise.all([
+    getTranslation(lng),
+    getDicechoServerApi(),
+  ]);
+
   const initialData = await api.topic.list(
     {
       pageSize: 20,

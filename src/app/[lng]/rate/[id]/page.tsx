@@ -15,9 +15,12 @@ export async function generateMetadata({
   params: Promise<{ lng: string; id: string }>;
 }): Promise<Metadata> {
   const { lng, id } = await params;
-  const { t } = await getTranslation(lng);
 
-  const rate = await api.rate.detail({ id }).catch(() => null);
+  // Parallel fetch: translation and rate data
+  const [{ t }, rate] = await Promise.all([
+    getTranslation(lng),
+    api.rate.detail({ id }).catch(() => null),
+  ]);
 
   if (!rate) {
     return {

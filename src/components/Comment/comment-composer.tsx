@@ -1,15 +1,25 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { useMutation } from "@tanstack/react-query";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AuthDialog } from "@/components/Auth/AuthDialog";
 import { useSession } from "next-auth/react";
 import { useTranslation } from "react-i18next";
-import { RichTextEditor } from '@/components/Editor'
+
+// Dynamic import for RichTextEditor to reduce initial bundle size
+const RichTextEditor = dynamic(
+  () => import("@/components/Editor/RichTextEditor").then((mod) => mod.RichTextEditor),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-32 w-full rounded-md" />,
+  }
+);
 
 interface CommentComposerProps {
   placeholder: string;

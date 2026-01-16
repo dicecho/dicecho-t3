@@ -17,6 +17,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lng, id } = await params;
 
+  // Start API client fetch early
   const api = await getDicechoServerApi();
   const scenario = await api.module.detail(id, { revalidate: 300 }).catch(() => null);
   if (!scenario) {
@@ -74,8 +75,11 @@ const ScenarioDetailPage = async ({
 }: {
   params: Promise<{ lng: string; id: string }>;
 }) => {
-  const { lng, id } = await params;
-  const api = await getDicechoServerApi();
+  // Parallel: parse params and get API client
+  const [{ lng, id }, api] = await Promise.all([
+    params,
+    getDicechoServerApi(),
+  ]);
 
   // Server-side data fetching with 300s (5min) revalidation cache
   // Scenario details change less frequently than lists

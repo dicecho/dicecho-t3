@@ -17,8 +17,12 @@ export default async function Image({
   params: Promise<{ lng: string; id: string }>;
 }) {
   const { lng, id } = await params;
-  const { t } = await getTranslation(lng);
-  const rate = await api.rate.detail({ id }).catch(() => null);
+
+  // Parallel fetch: translation and rate data
+  const [{ t }, rate] = await Promise.all([
+    getTranslation(lng),
+    api.rate.detail({ id }).catch(() => null),
+  ]);
 
   const modTitle = rate?.mod?.title || "TRPG";
   const userName = rate?.user.nickName || "User";
